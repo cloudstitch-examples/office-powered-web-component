@@ -1,0 +1,35 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`office-powered-web-component`
+This is an example of how you can publish a web compoent that nontechnical users can update with documents in their office suite.
+
+@demo demo/index.html
+-->
+
+<dom-module id="office-powered-web-component">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    class MyElement extends Polymer.Element {
+      static get is() { return 'office-powered-web-component'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'office-powered-web-component'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(MyElement.is, MyElement);
+  </script>
+</dom-module>
