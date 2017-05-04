@@ -20,13 +20,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../url-bar.html">
   <link rel="import" href="../demo-pages-shared-styles.html">
 
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      iframe {
-        width: 100%;
-      }
-    </style>
-  </custom-style>
+  <style is="custom-style" include="demo-pages-shared-styles">
+    iframe {
+      width: 100%;
+    }
+  </style>
 </head>
 <body unresolved>
   <url-bar></url-bar>
@@ -43,7 +41,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       iframe.setAttribute('src', window.location.href);
       document.body.appendChild(iframe);
     }
-
     document.querySelector('#message').innerText = message;
   </script>
 </body>

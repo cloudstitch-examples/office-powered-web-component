@@ -17,7 +17,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../demo-snippet.html">
-  <link rel="import" href="simple-button.html">
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+
 </head>
 <body>
   <!--
@@ -43,13 +45,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <demo-snippet id="customDemo">
     <template>
-      <simple-button value="batman"></simple-button>
+      <paper-checkbox disabled></paper-checkbox>
     </template>
   </demo-snippet>
 
   <demo-snippet id="demoWithAttributes">
     <template>
       <input disabled type="date">
+    </template>
+  </demo-snippet>
+
+  <demo-snippet id="typeExtensionDemo">
+    <template is="dom-bind">
+      <paper-checkbox checked="{{checked}}"></paper-checkbox>
+      <input value="[[checked]]">
     </template>
   </demo-snippet>
 
@@ -62,58 +71,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         emptyHeight = emptyDemo.getBoundingClientRect().height;
       });
 
-      test('can render native elements', function(done) {
-        Polymer.Base.async(function() {
-          var element = document.getElementById('nativeDemo');
+      test('can render native elements', function() {
+        var element = document.getElementById('nativeDemo');
 
-          var rect = element.getBoundingClientRect();
+        // Render the distributed children.
+        Polymer.dom.flush();
 
-          expect(rect.height).to.be.greaterThan(emptyHeight);
+        var rect = element.getBoundingClientRect();
 
-          // The demo is rendered in the light dom, so it should exist, and
-          // it should respect the demo element's attributes, and not make up
-          // new ones.
-          var input = element.querySelector('input')
-          expect(input).to.be.ok;
-          expect(input.disabled).to.be.true;
+        expect(rect.height).to.be.greaterThan(emptyHeight);
 
-          var markdownElement = element.$.marked;
-          expect(markdownElement.markdown).to.be.equal('```\n\n<input disabled>\n\n```');
-          done();
-        }, 1);
+        // The demo is rendered in the light dom, so it should exist, and
+        // it should respect the demo element's attributes, and not make up
+        // new ones.
+        var input = Polymer.dom(element).querySelector('input')
+        expect(input).to.be.ok;
+        expect(input.disabled).to.be.true;
+        expect(input.checked).to.be.false;
+
+        var markdownElement = element.$.marked;
+        expect(markdownElement.markdown).to.be.equal('```\n\n<input disabled>\n\n```');
       });
 
-      test('can render custom elements', function(done) {
-        Polymer.Base.async(function() {
-          var element = document.getElementById('customDemo');
+      test('can render custom elements', function() {
+        var element = document.getElementById('customDemo');
 
-          var rect = element.getBoundingClientRect();
+        // Render the distributed children.
+        Polymer.dom.flush();
 
-          expect(rect.height).to.be.greaterThan(emptyHeight);
+        var rect = element.getBoundingClientRect();
 
-          // The demo is rendered in the light dom, so it should exist, and
-          // it should respect the demo element's attributes, and not make up
-          // new ones.
-          var button = element.querySelector('simple-button')
-          expect(button).to.be.ok;
-          expect(button.value).to.be.equal('batman');
+        expect(rect.height).to.be.greaterThan(emptyHeight);
 
-          var markdownElement = element.$.marked;
-          expect(markdownElement.markdown).to.be.equal('```\n\n<simple-button value="batman"></simple-button>\n\n```');
+        // The demo is rendered in the light dom, so it should exist, and
+        // it should respect the demo element's attributes, and not make up
+        // new ones.
+        var checkbox = Polymer.dom(element).querySelector('paper-checkbox')
+        expect(checkbox).to.be.ok;
+        expect(checkbox.disabled).to.be.true;
+        expect(checkbox.checked).to.be.false;
+
+        var markdownElement = element.$.marked;
+        expect(markdownElement.markdown).to.be.equal(
+            '```\n\n<paper-checkbox disabled></paper-checkbox>\n\n```');
+      });
+
+      test('elements are only rendered once when using a custom type-extension', function() {
+        var element = document.getElementById('typeExtensionDemo');
+
+        // Render the distributed children.
+        Polymer.dom.flush();
+
+        var inputs = element.querySelectorAll('input');
+        expect(inputs.length).to.be.equal(1);
+      });
+
+      test('can support databinding between elements', function(done) {
+        var element = document.getElementById('typeExtensionDemo');
+        var input = Polymer.dom(element).querySelector('input');
+        var checkbox = Polymer.dom(element).querySelector('paper-checkbox')
+
+        // Render the distributed children.
+        Polymer.dom.flush();
+
+        checkbox.set('checked', true);
+
+        flush(function() {
+          expect(checkbox.checked).to.be.equal(true);
+          expect(input.value).to.be.equal('true');
           done();
-        }, 1);
+        });
       });
     });
 
     suite('parsing', function() {
-      test('preserves attributes', function(done) {
-        Polymer.Base.async(function() {
-          var element = document.getElementById('demoWithAttributes');
+      test('preserves attributes', function() {
+        var element = document.getElementById('demoWithAttributes');
 
-          var markdownElement = element.$.marked;
-          expect(markdownElement.markdown).to.be.equal('```\n\n<input disabled type="date">\n\n```');
-          done();
-        }, 1);
+        // Render the distributed children.
+        Polymer.dom.flush();
+
+        var markdownElement = element.$.marked;
+        expect(markdownElement.markdown).to.be.equal(
+            '```\n\n<input disabled type="date">\n\n```');
       });
     });
   </script>
