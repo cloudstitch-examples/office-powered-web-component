@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../marked-element/marked-element.html">
+<link rel="import" href="../app-route/app-location.html">
+<link rel="import" href="../app-route/app-route.html">
+
+<!--
+`office-powered-web-component`
+This is an example of how you can publish a web compoent that nontechnical users can update with documents in their office suite.
+
+@demo demo/index.html
+-->
+
+<dom-module id="office-powered-web-component">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <app-location route="{{route}}" use-hash-as-path></app-location>
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}">
+    </app-route>
+
+    <iron-ajax auto url$="[[settingsUrl]]" handle-as="json" last-response="{{settings}}"></iron-ajax>
+    <iron-ajax auto url$="[[spreadsheetUrl]]" handle-as="json" last-response="{{spreadsheet}}"></iron-ajax>
+
+    <ul>
+      <li><a href="#/Home">Home</a></li>
+      <li><a href="#/Page1">Page 1</a></li>
+      <li><a href="#/Page2">Page 2</a></li>
+    </ul>
+
+    <div>Selected page: [[page]] -> [[documentUrl]]</div>
+
+    <marked-element name="Home">
+      <div class="markdown-html"></div>
+      <script type="text/markdown" src$="[[documentUrl]]"></script>
+    </marked-element>
+  
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'office-powered-web-component',
+
+      properties: {
+          settingsUrl: {
+            type: String
+          },
+          settings: {
+            type: Object
+          },
+          spreadsheetUrl: {
+            type: String
+          },
+          spreadsheet: {
+            type: Object,
+          },
+          documentUrl: {
+            type: String
+          },
+          document: {
+            type: String
+          },
+          route: {
+            type: Object
+          }   
+        },
+
+      observers: [
+          '_routePageChanged(routeData.page)'
+      ],
+
+      ready: function() {
+        this.set('settingsUrl', this.resolveUrl('_data/cloudstitch.json'));
+        this.set('spreadsheetUrl', this.resolveUrl('_data/office-powered-web-component.json'));
+        this.set('documentBase', this.resolveUrl('pages/'));
+      },
+
+      _routePageChanged: function(page) {
+        if (page === undefined) {
+          page = 'Home';
+        }
+        this.set('page', page || "Home");
+        this.set('documentUrl', this.resolveUrl('pages/' + this.page + '.markdown'));
+        console.log(this.get('documentUrl'));
+      }
+
+    });
+  </script>
+</dom-module>

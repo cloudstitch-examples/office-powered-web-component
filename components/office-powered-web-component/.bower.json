@@ -1,0 +1,28 @@
+{
+  "name": "office-powered-web-component",
+  "description": "This is an example of how you can publish a web compoent that nontechnical users can update with documents in their office suite.",
+  "main": "office-powered-web-component.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "marked-element": "PolymerElements/marked-element#^1.4.2",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.9",
+    "app-route": "PolymerElements/app-route#^1.0.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^6.0.0-prerelease.5",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/cloudstitch-examples/office-powered-web-component",
+  "_release": "d2ec8bfcb8",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d2ec8bfcb8ca07bb29cad3bddd39be0cb060c8a1"
+  },
+  "_source": "git://github.com/cloudstitch-examples/office-powered-web-component.git",
+  "_target": "master",
+  "_originalSource": "cloudstitch-examples/office-powered-web-component",
+  "_direct": true
+}
