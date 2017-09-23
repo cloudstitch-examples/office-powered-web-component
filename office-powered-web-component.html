@@ -15,7 +15,85 @@ This is an example of how you can publish a web compoent that nontechnical users
   <template>
     <style>
       :host {
+        --nice-midnight: #374252;
+        --nice-white: #F7F8FA;        
+        --nice-grey: #6E798B;
+
+        display: flex;
+        flex-direction: column;
+        max-width: 800px; 
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .nav {
+        order: -1;
+      }
+      
+      .main {
+        @apply(--layout-flex);
+        flex: 1;
+      }
+
+      .nav ul {
+        padding: 20px 30px;
+        list-style: none;
+        margin: 0;
+      }
+
+      .nav li {
+        list-style: none;
+        margin: 0;
+        text-align: left;
+      }
+
+      .nav li > a {
         display: block;
+        color: var(--nice-midnight);
+        position: relative;        
+        margin: 3px 0 3px 10px; 
+        padding: 3px 5px 3px 5px;
+        font-size: 20px;
+        text-decoration: none;
+        font-size: 1em;
+        border-radius: 4px;
+      }
+
+      .nav li > a[selected] {
+        color: var(--nice-white);
+        background-color: var(--nice-midnight);
+      }
+      
+      .main {
+        background-color: var(--nice-white);
+        border: 1px solid var(--nice-grey);
+        min-height: 300px;
+        padding: 15px 20px;
+        border-radius: 3px;
+      }
+
+      @media (min-width: 768px) {
+        :host {
+          flex-direction: row;
+          flex: 1;
+        }
+
+        .nav li {
+          text-align: center;
+        }
+
+        .main {
+          flex: 1;
+        }
+
+        .nav {
+          /* 12em is the width of the columns */
+          flex: 0 0 12em;
+        }
+
+        li.nav-li {
+          text-align: left;
+        }
       }
     </style>
 
@@ -29,19 +107,20 @@ This is an example of how you can publish a web compoent that nontechnical users
     <iron-ajax auto url$="[[settingsUrl]]" handle-as="json" last-response="{{settings}}"></iron-ajax>
     <iron-ajax auto url$="[[spreadsheetUrl]]" handle-as="json" last-response="{{spreadsheet}}"></iron-ajax>
 
-    <ul>
-      <li><a href="#/Home">Home</a></li>
-      <li><a href="#/Page1">Page 1</a></li>
-      <li><a href="#/Page2">Page 2</a></li>
-    </ul>
+    <nav class="nav">
+      <ul>
+        <li><a href="#/Home" selected$="[[isSelected('Home', page)]]">Home</a></li>
+        <li><a href="#/Page1" selected$="[[isSelected('Page1', page)]]">Page 1</a></li>
+        <li><a href="#/Page2" selected$="[[isSelected('Page2', page)]]">Page 2</a></li>
+      </ul>
+    </nav>
 
-    <div>Selected page: [[page]] -> [[documentUrl]]</div>
-
-    <marked-element name="Home">
-      <div class="markdown-html"></div>
-      <script type="text/markdown" src$="[[documentUrl]]"></script>
-    </marked-element>
-  
+    <main class="main">
+      <marked-element name="Home">
+        <div class="markdown-html"></div>
+        <script type="text/markdown" src$="[[documentUrl]]"></script>
+      </marked-element>
+    </main>
   </template>
 
   <script>
@@ -90,6 +169,10 @@ This is an example of how you can publish a web compoent that nontechnical users
         this.set('page', page || "Home");
         this.set('documentUrl', this.resolveUrl('pages/' + this.page + '.markdown'));
         console.log(this.get('documentUrl'));
+      },
+
+      isSelected: function(item, page) {
+        return (item == page);
       }
 
     });
